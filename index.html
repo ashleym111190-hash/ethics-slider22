@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Where's the Line? - AI Ethics Slider</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #4f46e5;
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #4f46e5;
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // AlertCircle icon component
+        const AlertCircle = () => (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+        );
+
+        function EthicsSlider() {
+            const [sliderValues, setSliderValues] = useState({
+                scenario1: 50,
+                scenario2: 50,
+                scenario3: 50,
+                scenario4: 50
+            });
+
+            const scenarios = [
+                {
+                    id: 'scenario1',
+                    title: 'Scenario A: Maria & Dyslexia Support',
+                    description: 'Maria, who has dyslexia, uses AI to break down a complex scientific article into bullet points she can process.',
+                    consideration: 'Is this different from providing large-print texts or audio versions?'
+                },
+                {
+                    id: 'scenario2',
+                    title: 'Scenario B: Jordan\'s Complete Delegation',
+                    description: 'Jordan asks AI to write their entire essay, submits it without reading.',
+                    consideration: 'Clear violation, but WHY did Jordan feel this was necessary?'
+                },
+                {
+                    id: 'scenario3',
+                    title: 'Scenario C: Amara\'s Writing Support',
+                    description: 'Amara uses AI to check grammar, suggest paragraph transitions, and identify gaps in their argument.',
+                    consideration: 'How is this different from visiting the writing center?'
+                },
+                {
+                    id: 'scenario4',
+                    title: 'Scenario D: Chen\'s Translation Process',
+                    description: 'Chen translates their thoughts from Mandarin to English using AI, then revises for academic tone.',
+                    consideration: 'Is language a barrier to showing knowledge or part of the knowledge itself?'
+                }
+            ];
+
+            const handleSliderChange = (scenarioId, value) => {
+                setSliderValues(prev => ({
+                    ...prev,
+                    [scenarioId]: value
+                }));
+            };
+
+            const getValueLabel = (value) => {
+                if (value < 33) return 'Fully Acceptable';
+                if (value < 67) return 'Gray Area';
+                return 'Integrity Violation';
+            };
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+                    <div className="max-w-4xl mx-auto">
+                        <div className="bg-white rounded-lg shadow-xl p-8 mb-6">
+                            <h1 className="text-3xl font-bold text-gray-800 mb-2">Where's the Line?</h1>
+                            <p className="text-lg text-gray-600 mb-6">
+                                Interactive Scenario Slider: Exploring AI Use in Academic Settings
+                            </p>
+                            <div className="flex items-start gap-3 bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                                <div className="flex-shrink-0 mt-0.5">
+                                    <AlertCircle />
+                                </div>
+                                <p className="text-sm text-gray-700">
+                                    Drag each slider to indicate where you think the scenario falls on the spectrum from 
+                                    "Fully Acceptable" to "Integrity Violation." There are no wrong answers—this is about 
+                                    exploring the nuances of AI use in education.
+                                </p>
+                            </div>
+                        </div>
+
+                        {scenarios.map((scenario, index) => (
+                            <div key={scenario.id} className="bg-white rounded-lg shadow-lg p-6 mb-6">
+                                <div className="mb-4">
+                                    <h2 className="text-xl font-semibold text-gray-800 mb-2">
+                                        {scenario.title}
+                                    </h2>
+                                    <p className="text-gray-700 mb-3">
+                                        {scenario.description}
+                                    </p>
+                                    <div className="bg-amber-50 border-l-4 border-amber-400 p-3 rounded">
+                                        <p className="text-sm text-gray-700 italic">
+                                            <strong>Consider:</strong> {scenario.consideration}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="mt-6">
+                                    <div className="flex justify-between text-sm text-gray-600 mb-2">
+                                        <span className="font-medium text-green-600">Fully Acceptable</span>
+                                        <span className="font-medium text-yellow-600">Gray Area</span>
+                                        <span className="font-medium text-red-600">Integrity Violation</span>
+                                    </div>
+                                    
+                                    <input
+                                        type="range"
+                                        min="0"
+                                        max="100"
+                                        value={sliderValues[scenario.id]}
+                                        onChange={(e) => handleSliderChange(scenario.id, parseInt(e.target.value))}
+                                        className="w-full h-3 rounded-lg appearance-none cursor-pointer slider"
+                                        style={{
+                                            background: `linear-gradient(to right, 
+                                                #10b981 0%, 
+                                                #10b981 33%, 
+                                                #eab308 33%, 
+                                                #eab308 67%, 
+                                                #ef4444 67%, 
+                                                #ef4444 100%)`
+                                        }}
+                                    />
+                                    
+                                    <div className="mt-3 text-center">
+                                        <span className={`inline-block px-4 py-2 rounded-full text-white font-medium ${
+                                            sliderValues[scenario.id] < 33 ? 'bg-green-500' :
+                                            sliderValues[scenario.id] < 67 ? 'bg-yellow-500' : 'bg-red-500'
+                                        }`}>
+                                            Your assessment: {getValueLabel(sliderValues[scenario.id])}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+
+                        <div className="bg-white rounded-lg shadow-lg p-6 mt-8">
+                            <h3 className="text-xl font-semibold text-gray-800 mb-3">Reflection Questions</h3>
+                            <ul className="space-y-2 text-gray-700">
+                                <li className="flex items-start">
+                                    <span className="text-indigo-500 mr-2">•</span>
+                                    <span>What factors influenced your assessment of each scenario?</span>
+                                </li>
+                                <li className="flex items-start">
+                                    <span className="text-indigo-500 mr-2">•</span>
+                                    <span>Did any scenarios challenge your initial assumptions about AI use?</span>
+                                </li>
+                                <li className="flex items-start">
+                                    <span className="text-indigo-500 mr-2">•</span>
+                                    <span>How might context (student needs, assignment goals, institutional policies) shift these assessments?</span>
+                                </li>
+                                <li className="flex items-start">
+                                    <span className="text-indigo-500 mr-2">•</span>
+                                    <span>What principles can guide ethical AI use in your academic work?</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<EthicsSlider />, document.getElementById('root'));
+    </script>
+</body>
+</html>
